@@ -1,0 +1,13 @@
+package com.example.server.auth.dto;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+public class SendVerifyCodeRequest {
+
+	private String email;
+}
