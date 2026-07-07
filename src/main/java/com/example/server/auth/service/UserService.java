@@ -40,7 +40,7 @@ public class UserService {
 
 	public Map<String, Object> logout() {
 
-		// TODO: 로그인 유지 방식 확정 후 세션/JWT 로그아웃 처리로 변경
+		// TODO: 로그인 유지 방식 확정 후 세션 로그아웃 처리로 변경
 		Map<String, Object> result = new HashMap<>();
 
 		result.put("message", "로그아웃 테스트 성공");

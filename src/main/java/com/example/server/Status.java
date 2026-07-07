@@ -18,10 +18,10 @@ public class Status {
 	public String Memory() {
 		Runtime rt = Runtime.getRuntime();
 
-		long totalMemory = rt.totalMemory() / 1024 / 1024; // 전체 메모리
-		long freeMemory = rt.freeMemory() / 1024 / 1024; // 남은 메모리
-		long usedMemory = totalMemory - freeMemory; // 사용중 메모리
-		long maxMemory = rt.maxMemory() / 1024 / 1024; // 최대 메모리
+		long totalMemory = rt.totalMemory() / 1024 / 1024;
+		long freeMemory = rt.freeMemory() / 1024 / 1024;
+		long usedMemory = totalMemory - freeMemory;
+		long maxMemory = rt.maxMemory() / 1024 / 1024;
 
 		return "Total: " + totalMemory + "MB" + " | Used: " + usedMemory + "MB" + " | Free: " + freeMemory + "MB"
 				+ " | Max: " + maxMemory + "MB";
