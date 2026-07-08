@@ -1,12 +1,11 @@
 package com.example.server.scheduler;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RestController;
 
 // import com.example.server.scheduler.dto.newsDTO;
 import com.example.server.scheduler.infos.News;
-
-import java.util.List;
 
 @RestController
 public class test {
@@ -17,8 +16,14 @@ public class test {
     }
 
     @GetMapping("/test")
-    public void test() {
-        newsService.fetchNews();
+    public String test() {
+        // newsService.testnews();
         // return "1";
+        return "1";
+    }
+
+    @Scheduled(fixedRate = 600000)
+    public void onScheduler(){
+        newsService.newsScheduler();
     }
 }

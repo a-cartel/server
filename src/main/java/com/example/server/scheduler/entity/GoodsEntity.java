@@ -1,6 +1,5 @@
 package com.example.server.scheduler.entity;
 
-import java.time.LocalDate;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,8 +8,8 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "POKE_NEWS")
-public class NewsEntity {
+@Table(name = "Poke_goods")
+public class GoodsEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -28,7 +27,4 @@ public class NewsEntity {
 
     @Column
     private String newsType;
-
-    @Column
-    private LocalDate newsDate;
 }

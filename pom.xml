@@ -23,6 +23,13 @@
 	</properties>
 
 	<dependencies>
+
+		<dependency>
+    <groupId>io.github.cdimascio</groupId>
+    <artifactId>dotenv-java</artifactId>
+    <version>3.2.0</version>
+</dependency>
+
 		<!-- 웹 서버를 열기 위한 의존성 -->
 		<!-- 내장 Tomcat이 포함되어 localhost:8080 접속 가능 -->
 		<dependency>

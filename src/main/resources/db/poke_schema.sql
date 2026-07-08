@@ -13,17 +13,15 @@
 -- -- ============================================================
 -- -- SHOP / Poke_shops
 -- -- ============================================================
--- CREATE TABLE POKE_SHOPS (
---     SHOP_ID             VARCHAR2(24)  NOT NULL,
---     SHOP_IMG            VARCHAR2(500),
---     SHOP_OPEN           VARCHAR2(255),
---     SHOP_VACATION       VARCHAR2(255),
---     SHOP_ADDRESS        VARCHAR2(255),
---     SHOP_ADDRESS_DETAIL VARCHAR2(255),
---     SHOP_PHONENUMBER    VARCHAR2(20),
-
---     CONSTRAINT PK_POKE_SHOPS PRIMARY KEY (SHOP_ID)
--- );
+CREATE TABLE POKE_NEWS (
+    ID          NUMBER(19)      GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    NEWS_ID     NUMBER(10),
+    NEWS_TITLE  VARCHAR2(500),
+    NEWS_IMG    VARCHAR2(1000),
+    NEWS_URL    VARCHAR2(1000),
+    NEWS_TYPE   VARCHAR2(100),
+    NEWS_DATE   DATE
+);
 
 -- -- ============================================================
 -- -- REVIEW / Poke_reviews

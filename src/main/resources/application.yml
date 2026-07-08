@@ -17,9 +17,9 @@ spring:
   application:
     name: server
   datasource:
-    url: jdbc:oracle:thin:@192.168.0.51:1521/XEPDB1
-    username: junho
-    password: 1234
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     hikari:
       connection-timeout: 5000
       initialization-fail-timeout: 1

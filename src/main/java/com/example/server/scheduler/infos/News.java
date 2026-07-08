@@ -2,18 +2,18 @@ package com.example.server.scheduler.infos;
 
 import com.example.server.scheduler.repository.NewsRepository;
 import com.example.server.scheduler.entity.NewsEntity;
-// import com.example.server.scheduler.dto.NewsDTO;
+
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import lombok.RequiredArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -22,64 +22,63 @@ public class News {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    // 롬복써서 final 필드 기준 생성자 자동 생성
-    // public News(RestTemplate restTemplate, NewsRepository newsRepository) {
-    //     this.restTemplate = restTemplate;
-    //     this.newsRepository = newsRepository;
+    // public void testnews(){
+    //     try {
+    //     int n = 999;
+    //     String url = "https://www.pokemon.co.jp/api/info/index/?limit=20&page=" + n;
+    //     ResponseEntity<String> res = restTemplate.getForEntity(url, String.class);
+    //     // JsonNode root = objectMapper.readTree(res.getBody());
+    //     // JsonNode results = root.get("results");
+    //     // System.out.println(results);
+
+    //     System.out.println(res);
+    //     } catch (Exception e){
+    //         System.out.println("***에러*** : " + e);
+    //     }
     // }
 
-    public void fetchNews() {
+    public void newsScheduler (){
+        int page = 1;
+        boolean flag = true;
+        while (flag) {
+        flag = false;
 
-        // perPage 수 찾기
-        String url = "https://www.pokemon.co.jp/api/info/index/?limit=20&page=1";
         try {
+            String url = "https://www.pokemon.co.jp/api/info/index/?limit=20&page=" + page;
             ResponseEntity<String> res = restTemplate.getForEntity(url, String.class);
-            JsonNode paging = objectMapper.readTree(res.getBody()).get("paging");
-            JsonNode n = paging.get("perPage");
-            // int total = n.asInt();
-            
-        } catch (Exception e) {
-            System.out.println("perPage 조회 에러: " + e.getMessage());
-        }
+            JsonNode root = objectMapper.readTree(res.getBody());
+            JsonNode results = root.get("results");
 
-        // for (int page = 1; page >= 1; page--) 
-        int testPage = 87;
-
-            for (int page = testPage; page >= testPage; page--){
-            // String base = "https://www.pokemon.co.jp/api/info/index/?limit=20&page=" + page;
-            String base = "https://www.pokemon.co.jp/api/info/index/?limit=20&page=" + "84";
-
-            try {
-                ResponseEntity<String> pageRes = restTemplate.getForEntity(base, String.class);
-                JsonNode root = objectMapper.readTree(pageRes.getBody());
-                JsonNode results = root.get("results");
-
-                if (results != null && results.isArray()) {
-                    for (JsonNode item : results) {
-                        // System.out.println(item);
-                        // System.out.println(item.get("id"));
-
-                        saveOne(item);
-                        System.out.println(item);
-                        System.out.println(item.get("img_1"));
-                        System.out.println("");
-                        System.out.println("");
-                        System.out.println("");
-                        
-                    }
-                    // System.out.println("page " + page + " 저장 완료, " + results.size() + "건");
-                }
-
-                Thread.sleep(5000);
-
-            } catch (Exception e) {
-                System.out.println("page " + page + " 에러: " + e.getMessage());
+            if (results == null || !results.isArray() || results.size() == 0) {
+                break;
             }
+
+            for (JsonNode item : results) {
+                Integer newsId = item.get("id").asInt();
+
+                if (!newsRepository.existsByNewsId(newsId)) {
+                    sendDB(item);
+                    flag = true;
+                }
+            }
+
+            System.out.println("page " + page + " 확인 완료");
+            page++;
+
+            // if (page > 10) {
+            //     System.out.println("페이지 제한(10) 도달, 종료");
+            //     break;
+            // }
+            Thread.sleep(300);
+        } catch (Exception e) {
+            System.out.println("page " + page + " 에러: " + e);
+            break;
         }
     }
+}
 
     @Transactional
-    public void saveOne(JsonNode item) {
+    public void sendDB(JsonNode item) {
         Integer newsId = item.get("id").asInt();
 
         if (newsRepository.existsByNewsId(newsId)) {
@@ -93,7 +92,12 @@ public class News {
         entity.setNewsTitle(item.get("title").asString());
         entity.setNewsType(item.get("term").asString());
         entity.setNewsImg(item.get("img_1").asString());
-
+        
+        String dateStr = item.get("start_date").asString();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+        LocalDate newsDate = LocalDate.parse(dateStr, formatter);
+        entity.setNewsDate(newsDate);
+        
         newsRepository.save(entity);
     }
 }
