@@ -69,7 +69,7 @@ public class News {
             //     System.out.println("페이지 제한(10) 도달, 종료");
             //     break;
             // }
-            Thread.sleep(300);
+            Thread.sleep(300000);
         } catch (Exception e) {
             System.out.println("page " + page + " 에러: " + e);
             break;
