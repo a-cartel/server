@@ -22,7 +22,7 @@ public class test {
         return "1";
     }
 
-    @Scheduled(fixedRate = 600000)
+    @Scheduled(fixedRate = 30000)
     public void onScheduler(){
         newsService.newsScheduler();
     }
