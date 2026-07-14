@@ -1,30 +1,51 @@
 package server.auth.entity;
 
-import jakarta.persistence.*;
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Setter
-@Table(name = "Poke_user")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "POKE_USER")
 public class userEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE) // oracle에서 auto_increment 지정
-    private Long id;
 
-    @Column(unique = true) // unique 제약조건을 추가
+    @Id
+    @Column(name = "ID", length = 24, nullable = false)
+    private String id;
+
+    @Column(name = "EMAIL", length = 100, nullable = false, unique = true)
     private String email;
 
-    @Column
+    @Column(name = "PASSWORD", length = 255, nullable = false)
     private String password;
 
-    @Column
+    @Column(name = "NAME", length = 50, nullable = false)
     private String name;
 
-    @Column
-    private String img;
+    @Column(
+        name = "CREATED_AT",
+        nullable = false,
+        insertable = false,
+        updatable = false
+    )
+    private LocalDateTime createdAt;
 
-    @Column
-    private String create_at;
+    public userEntity(
+            String id,
+            String email,
+            String password,
+            String name
+    ) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.name = name;
+    }
 }

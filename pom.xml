@@ -25,10 +25,10 @@
 	<dependencies>
 
 		<dependency>
-    <groupId>io.github.cdimascio</groupId>
-    <artifactId>dotenv-java</artifactId>
-    <version>3.2.0</version>
-</dependency>
+			<groupId>io.github.cdimascio</groupId>
+			<artifactId>dotenv-java</artifactId>
+			<version>3.2.0</version>
+		</dependency>
 
 		<!-- 웹 서버를 열기 위한 의존성 -->
 		<!-- 내장 Tomcat이 포함되어 localhost:8080 접속 가능 -->
@@ -52,19 +52,27 @@
 		</dependency>
 
 		<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-data-jpa</artifactId>
-</dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
 
 		<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-jdbc</artifactId>
-</dependency>
-<dependency>
-		<groupId>com.oracle.database.jdbc</groupId>
-    <artifactId>ojdbc10</artifactId>
-    <version>19.18.0.0</version> <scope>runtime</scope>
-	</dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.oracle.database.jdbc</groupId>
+			<artifactId>ojdbc10</artifactId>
+			<version>19.18.0.0</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-crypto</artifactId>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>
@@ -74,32 +82,32 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 
-		<!-- 26/07/12 
+			<!-- 26/07/12 
 		Spring Boot 3.x/4.x + 최신 Maven 조합에서는 lombok 의존성만 넣는 것만으로는 부족하고, 
 		maven-compiler-plugin에 명시적으로 annotation processor 경로를 지정해줘야 하는 경우가 있습니다.
 		 -->
-		<plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <configuration>
-                <annotationProcessorPaths>
-                    <path>
-                        <groupId>org.projectlombok</groupId>
-                        <artifactId>lombok</artifactId>
-                    </path>
-                </annotationProcessorPaths>
-            </configuration>
-        </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
 
-		<plugin>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-        </plugin>
-		<!-- 26/07/12 
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<!-- 26/07/12 
 		Spring Boot 3.x/4.x + 최신 Maven 조합에서는 lombok 의존성만 넣는 것만으로는 부족하고, 
 		maven-compiler-plugin에 명시적으로 annotation processor 경로를 지정해줘야 하는 경우가 있습니다.
 		 -->
-		
+
 		</plugins>
 	</build>
 

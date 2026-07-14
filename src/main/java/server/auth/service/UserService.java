@@ -2,7 +2,9 @@ package server.auth.service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import server.auth.dto.LoginRequest;
@@ -10,63 +12,126 @@ import server.auth.dto.LoginResponse;
 import server.auth.dto.RegisterRequest;
 import server.auth.dto.ResetPasswordRequest;
 import server.auth.dto.SendVerifyCodeRequest;
+import server.auth.entity.userEntity;
+import server.auth.repository.userRepository;
 
 @Service
 public class UserService {
 
-	public LoginResponse login(LoginRequest request) {
+    private final userRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-		// TODO: DB 연동 후 POKE_USER 테이블 조회 로직으로 변경
-		String testEmail = "test@test.com";
-		String testPassword = "1234";
+    public UserService(
+            userRepository userRepository,
+            PasswordEncoder passwordEncoder
+    ) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
-		if (testEmail.equals(request.getEmail()) && testPassword.equals(request.getPassword())) {
-			return new LoginResponse("로그인 성공", true, request.getEmail());
-		}
+    public LoginResponse login(LoginRequest request) {
 
-		return new LoginResponse("로그인 실패", false, null);
-	}
+        String email = request.getEmail().trim().toLowerCase();
 
-	public Map<String, Object> register(RegisterRequest request) {
+        userEntity user = userRepository.findByEmail(email)
+                .orElse(null);
 
-		// TODO: DB 연동 후 POKE_USER 테이블 저장 로직으로 변경
-		Map<String, Object> result = new HashMap<>();
+        if (user == null) {
+            return new LoginResponse(
+                    "이메일 또는 비밀번호가 올바르지 않습니다.",
+                    false,
+                    null
+            );
+        }
 
-		result.put("message", "회원가입 테스트 성공");
-		result.put("email", request.getEmail());
+        boolean passwordMatches = passwordEncoder.matches(
+                request.getPassword(),
+                user.getPassword()
+        );
 
-		return result;
-	}
+        if (!passwordMatches) {
+            return new LoginResponse(
+                    "이메일 또는 비밀번호가 올바르지 않습니다.",
+                    false,
+                    null
+            );
+        }
 
-	public Map<String, Object> logout() {
+        return new LoginResponse(
+                "로그인 성공",
+                true,
+                user.getEmail()
+        );
+    }
 
-		// TODO: 로그인 유지 방식 확정 후 세션 로그아웃 처리로 변경
-		Map<String, Object> result = new HashMap<>();
+    public Map<String, Object> register(RegisterRequest request) {
 
-		result.put("message", "로그아웃 테스트 성공");
+        Map<String, Object> result = new HashMap<>();
 
-		return result;
-	}
+        String email = request.getEmail().trim().toLowerCase();
 
-	public Map<String, Object> sendVerifyCode(SendVerifyCodeRequest request) {
+        if (userRepository.existsByEmail(email)) {
+            result.put("success", false);
+            result.put("message", "이미 사용 중인 이메일입니다.");
+            return result;
+        }
 
-		// TODO: 이메일 발송 기능 연동 후 실제 인증코드 발송 로직으로 변경
-		Map<String, Object> result = new HashMap<>();
+        String userId = UUID.randomUUID()
+                .toString()
+                .replace("-", "")
+                .substring(0, 24);
 
-		result.put("message", "인증코드 발송 테스트 성공");
-		result.put("email", request.getEmail());
+        String encodedPassword =
+                passwordEncoder.encode(request.getPassword());
 
-		return result;
-	}
+        userEntity user = new userEntity(
+                userId,
+                email,
+                encodedPassword,
+                request.getName()
+        );
 
-	public Map<String, Object> resetPassword(ResetPasswordRequest request) {
+        userRepository.save(user);
 
-		// TODO: DB 연동 후 인증코드 검증 및 비밀번호 변경 로직으로 변경
-		Map<String, Object> result = new HashMap<>();
+        result.put("success", true);
+        result.put("message", "회원가입이 완료되었습니다.");
+        result.put("id", userId);
+        result.put("email", email);
+        result.put("name", request.getName());
 
-		result.put("message", "비밀번호 재설정 테스트 성공");
-		result.put("email", request.getEmail());
+        return result;
+    }
 
-		return result;
-	}
+    public Map<String, Object> logout() {
+
+        Map<String, Object> result = new HashMap<>();
+
+        result.put("message", "로그아웃 테스트 성공");
+
+        return result;
+    }
+
+    public Map<String, Object> sendVerifyCode(
+            SendVerifyCodeRequest request
+    ) {
+
+        Map<String, Object> result = new HashMap<>();
+
+        result.put("message", "인증코드 발송 테스트 성공");
+        result.put("email", request.getEmail());
+
+        return result;
+    }
+
+    public Map<String, Object> resetPassword(
+            ResetPasswordRequest request
+    ) {
+
+        Map<String, Object> result = new HashMap<>();
+
+        result.put("message", "비밀번호 재설정 테스트 성공");
+        result.put("email", request.getEmail());
+
+        return result;
+    }
 }
