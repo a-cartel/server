@@ -48,4 +48,8 @@ public class userEntity {
         this.password = password;
         this.name = name;
     }
+
+    public void changePassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
 }

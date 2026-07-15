@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import server.auth.dto.RegisterRequest;
 import server.auth.service.UserService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
@@ -18,7 +19,7 @@ public class Register {
 	}
 
 	@PostMapping("/register")
-	public Map<String, Object> register(@RequestBody RegisterRequest request) {
+	public Map<String, Object> register(@Valid @RequestBody RegisterRequest request) {
 		return userService.register(request);
 	}
 }
