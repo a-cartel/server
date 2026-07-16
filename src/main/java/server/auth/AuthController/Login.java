@@ -28,9 +28,19 @@ public class Login {
             @Valid @RequestBody LoginRequest request,
             HttpSession session
     ) {
-        LoginResponse response = userService.login(request);
+
+        LoginResponse response =
+                userService.login(request);
 
         if (response.isLogin()) {
+
+            // 리뷰 삭제 시 로그인 회원과 작성자를 비교하기 위해 저장
+            session.setAttribute(
+                    "LOGIN_USER_ID",
+                    response.getUserId()
+            );
+
+            // 기존 비밀번호 변경 등의 기능에서 사용하는 이메일
             session.setAttribute(
                     "LOGIN_USER_EMAIL",
                     response.getEmail()

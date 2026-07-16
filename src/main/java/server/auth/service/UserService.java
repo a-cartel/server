@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import server.auth.dto.LoginRequest;
 import server.auth.dto.LoginResponse;
@@ -15,110 +16,190 @@ import server.auth.dto.SendVerifyCodeRequest;
 import server.auth.entity.userEntity;
 import server.auth.repository.userRepository;
 import server.exception.DuplicateEmailException;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
 
-	private final userRepository userRepository;
-	private final PasswordEncoder passwordEncoder;
+    private final userRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-	public UserService(userRepository userRepository, PasswordEncoder passwordEncoder) {
-		this.userRepository = userRepository;
-		this.passwordEncoder = passwordEncoder;
-	}
+    public UserService(
+            userRepository userRepository,
+            PasswordEncoder passwordEncoder
+    ) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
-	public LoginResponse login(LoginRequest request) {
+    public LoginResponse login(LoginRequest request) {
 
-		String email = request.getEmail().trim().toLowerCase();
+        String email = request.getEmail()
+                .trim()
+                .toLowerCase();
 
-		userEntity user = userRepository.findByEmail(email).orElse(null);
+        userEntity user = userRepository
+                .findByEmail(email)
+                .orElse(null);
 
-		if (user == null) {
-			return new LoginResponse("이메일 또는 비밀번호가 올바르지 않습니다.", false, null);
-		}
+        if (user == null) {
+            return new LoginResponse(
+                    "이메일 또는 비밀번호가 올바르지 않습니다.",
+                    false,
+                    null,
+                    null
+            );
+        }
 
-		boolean passwordMatches = passwordEncoder.matches(request.getPassword(), user.getPassword());
+        boolean passwordMatches = passwordEncoder.matches(
+                request.getPassword(),
+                user.getPassword()
+        );
 
-		if (!passwordMatches) {
-			return new LoginResponse("이메일 또는 비밀번호가 올바르지 않습니다.", false, null);
-		}
+        if (!passwordMatches) {
+            return new LoginResponse(
+                    "이메일 또는 비밀번호가 올바르지 않습니다.",
+                    false,
+                    null,
+                    null
+            );
+        }
 
-		return new LoginResponse("로그인 성공", true, user.getEmail());
-	}
+        return new LoginResponse(
+                "로그인 성공",
+                true,
+                user.getId(),
+                user.getEmail()
+        );
+    }
 
-	public Map<String, Object> register(RegisterRequest request) {
+    public Map<String, Object> register(RegisterRequest request) {
 
-		Map<String, Object> result = new HashMap<>();
+        Map<String, Object> result = new HashMap<>();
 
-		String email = request.getEmail().trim().toLowerCase();
+        String email = request.getEmail()
+                .trim()
+                .toLowerCase();
 
-		if (userRepository.existsByEmail(email)) {
-			throw new DuplicateEmailException("이미 사용 중인 이메일입니다.");
-		}
+        if (userRepository.existsByEmail(email)) {
+            throw new DuplicateEmailException(
+                    "이미 사용 중인 이메일입니다."
+            );
+        }
 
-		String userId = UUID.randomUUID().toString().replace("-", "").substring(0, 24);
+        String userId = UUID.randomUUID()
+                .toString()
+                .replace("-", "")
+                .substring(0, 24);
 
-		String encodedPassword = passwordEncoder.encode(request.getPassword());
+        String encodedPassword =
+                passwordEncoder.encode(request.getPassword());
 
-		userEntity user = new userEntity(userId, email, encodedPassword, request.getName());
+        userEntity user = new userEntity(
+                userId,
+                email,
+                encodedPassword,
+                request.getName()
+        );
 
-		userRepository.save(user);
+        userRepository.save(user);
 
-		result.put("success", true);
-		result.put("message", "회원가입이 완료되었습니다.");
-		result.put("id", userId);
-		result.put("email", email);
-		result.put("name", request.getName());
+        result.put("success", true);
+        result.put("message", "회원가입이 완료되었습니다.");
+        result.put("id", userId);
+        result.put("email", email);
+        result.put("name", request.getName());
 
-		return result;
-	}
+        return result;
+    }
 
-	public Map<String, Object> sendVerifyCode(SendVerifyCodeRequest request) {
+    public Map<String, Object> sendVerifyCode(
+            SendVerifyCodeRequest request
+    ) {
 
-		Map<String, Object> result = new HashMap<>();
+        Map<String, Object> result = new HashMap<>();
 
-		result.put("message", "인증코드 발송 테스트 성공");
-		result.put("email", request.getEmail());
+        result.put(
+                "message",
+                "인증코드 발송 테스트 성공"
+        );
 
-		return result;
-	}
-	@Transactional
-	public Map<String, Object> resetPassword(String email, ResetPasswordRequest request) {
-		Map<String, Object> result = new HashMap<>();
+        result.put(
+                "email",
+                request.getEmail()
+        );
 
-		userEntity user = userRepository.findByEmail(email).orElse(null);
+        return result;
+    }
 
-		if (user == null) {
-			result.put("success", false);
-			result.put("message", "회원 정보를 찾을 수 없습니다.");
-			return result;
-		}
+    @Transactional
+    public Map<String, Object> resetPassword(
+            String email,
+            ResetPasswordRequest request
+    ) {
 
-		boolean currentPasswordMatches = passwordEncoder.matches(request.getCurrentPassword(), user.getPassword());
+        Map<String, Object> result = new HashMap<>();
 
-		if (!currentPasswordMatches) {
-			result.put("success", false);
-			result.put("message", "현재 비밀번호가 올바르지 않습니다.");
-			return result;
-		}
+        userEntity user = userRepository
+                .findByEmail(email)
+                .orElse(null);
 
-		boolean sameAsCurrentPassword = passwordEncoder.matches(request.getNewPassword(), user.getPassword());
+        if (user == null) {
+            result.put("success", false);
+            result.put(
+                    "message",
+                    "회원 정보를 찾을 수 없습니다."
+            );
 
-		if (sameAsCurrentPassword) {
-			result.put("success", false);
-			result.put("message", "새 비밀번호는 현재 비밀번호와 달라야 합니다.");
-			return result;
-		}
+            return result;
+        }
 
-		String encodedNewPassword = passwordEncoder.encode(request.getNewPassword());
+        boolean currentPasswordMatches =
+                passwordEncoder.matches(
+                        request.getCurrentPassword(),
+                        user.getPassword()
+                );
 
-		user.changePassword(encodedNewPassword);
-		userRepository.save(user);
+        if (!currentPasswordMatches) {
+            result.put("success", false);
+            result.put(
+                    "message",
+                    "현재 비밀번호가 올바르지 않습니다."
+            );
 
-		result.put("success", true);
-		result.put("message", "비밀번호가 변경되었습니다.");
+            return result;
+        }
 
-		return result;
-	}
+        boolean sameAsCurrentPassword =
+                passwordEncoder.matches(
+                        request.getNewPassword(),
+                        user.getPassword()
+                );
+
+        if (sameAsCurrentPassword) {
+            result.put("success", false);
+            result.put(
+                    "message",
+                    "새 비밀번호는 현재 비밀번호와 달라야 합니다."
+            );
+
+            return result;
+        }
+
+        String encodedNewPassword =
+                passwordEncoder.encode(
+                        request.getNewPassword()
+                );
+
+        user.changePassword(encodedNewPassword);
+
+        userRepository.save(user);
+
+        result.put("success", true);
+        result.put(
+                "message",
+                "비밀번호가 변경되었습니다."
+        );
+
+        return result;
+    }
 }

@@ -6,7 +6,12 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class LoginResponse {
+
 	private String message;
+
 	private boolean login;
+
+	private String userId;
+
 	private String email;
 }

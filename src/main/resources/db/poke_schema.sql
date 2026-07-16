@@ -10,9 +10,19 @@
 --     CONSTRAINT UK_POKE_USER_EMAIL UNIQUE (EMAIL)
 -- );
 
--- -- ============================================================
--- -- SHOP / Poke_shops
--- -- ============================================================
+-- ============================================================
+-- SHOP / POKE_SHOPS
+-- 리뷰가 참조할 매장 기본 정보
+-- ============================================================
+CREATE TABLE POKE_SHOPS (
+    SHOP_ID   VARCHAR2(24 CHAR)  NOT NULL,
+    SHOP_NAME VARCHAR2(255 CHAR) NOT NULL,
+
+    CONSTRAINT PK_POKE_SHOPS
+        PRIMARY KEY (SHOP_ID)
+);
+
+
 CREATE TABLE POKE_NEWS (
     ID          NUMBER(19)      GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     NEWS_ID     NUMBER(10),
@@ -23,26 +33,36 @@ CREATE TABLE POKE_NEWS (
     NEWS_DATE   DATE
 );
 
--- -- ============================================================
--- -- REVIEW / Poke_reviews
--- -- USER 1명은 REVIEW 여러 개 작성 가능
--- -- SHOP 1개는 REVIEW 여러 개 받을 수 있음
--- -- ============================================================
--- CREATE TABLE POKE_REVIEWS (
---     REVIEW_ID  VARCHAR2(24) NOT NULL,
---     USER_ID    VARCHAR2(24) NOT NULL,
---     SHOP_ID    VARCHAR2(24) NOT NULL,
---     CONTENT    CLOB,
---     RATING     NUMBER(1)    NOT NULL,
---     CREATED_AT TIMESTAMP    DEFAULT SYSTIMESTAMP NOT NULL,
+-- ============================================================
+-- REVIEW / POKE_REVIEWS
+-- USER 1명은 여러 개의 리뷰를 작성할 수 있음
+-- SHOP 1개는 여러 개의 리뷰를 받을 수 있음
+-- ============================================================
+CREATE TABLE POKE_REVIEWS (
+    REVIEW_ID  VARCHAR2(24 CHAR) NOT NULL,
+    USER_ID    VARCHAR2(24 CHAR) NOT NULL,
+    SHOP_ID    VARCHAR2(24 CHAR) NOT NULL,
+    CONTENT    CLOB,
+    RATING     NUMBER(1)         NOT NULL,
+    CREATED_AT TIMESTAMP(6)
+               DEFAULT SYSTIMESTAMP NOT NULL,
 
---     CONSTRAINT PK_POKE_REVIEWS PRIMARY KEY (REVIEW_ID),
---     CONSTRAINT FK_POKE_REVIEWS_USER FOREIGN KEY (USER_ID)
---         REFERENCES POKE_USER (ID) ON DELETE CASCADE,
---     CONSTRAINT FK_POKE_REVIEWS_SHOP FOREIGN KEY (SHOP_ID)
---         REFERENCES POKE_SHOPS (SHOP_ID) ON DELETE CASCADE,
---     CONSTRAINT CK_POKE_REVIEWS_RATING CHECK (RATING BETWEEN 1 AND 5)
--- );
+    CONSTRAINT PK_POKE_REVIEWS
+        PRIMARY KEY (REVIEW_ID),
+
+    CONSTRAINT FK_POKE_REVIEWS_USER
+        FOREIGN KEY (USER_ID)
+        REFERENCES POKE_USER (ID)
+        ON DELETE CASCADE,
+
+    CONSTRAINT FK_POKE_REVIEWS_SHOP
+        FOREIGN KEY (SHOP_ID)
+        REFERENCES POKE_SHOPS (SHOP_ID)
+        ON DELETE CASCADE,
+
+    CONSTRAINT CK_POKE_REVIEWS_RATING
+        CHECK (RATING BETWEEN 1 AND 5)
+);
 
 -- -- ============================================================
 -- -- pokemon_goods / Poke_goods
