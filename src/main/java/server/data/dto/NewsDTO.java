@@ -1,17 +1,24 @@
 package server.data.dto;
 
+import lombok.Getter;
+import server.data.entity.NewsEntity;
+
 import java.time.LocalDate;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 @Getter
-@AllArgsConstructor
 public class NewsDTO {
-    private Integer newsId;     // 뉴스 아이디
-    private String newsTitle;   // 뉴스 제목
-    private String newsImg;     // 이미지
-    private String newsType;    // 뉴스 타입
-    private String newsUrl;     // 리다이렉트용 url
-    private LocalDate newsDate; // 뉴스 올라온 날짜
+    //  private Long newsId; Id는 굳이 프런트엔드에 전해줄 필요가 없음
+    private String newsTitle;
+    private String newsImg;
+    private String newsUrl;
+    private String newsType;
+    private LocalDate newsDate;
+
+    public NewsDTO(NewsEntity entity) {
+        this.newsTitle = entity.getNewsTitle();
+        this.newsImg = entity.getNewsImg();
+        this.newsUrl = entity.getNewsUrl();
+        this.newsType = entity.getNewsType();
+        this.newsDate = entity.getNewsDate();
+    }
 }

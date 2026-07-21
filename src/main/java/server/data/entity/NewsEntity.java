@@ -1,17 +1,21 @@
 package server.data.entity;
 
-import java.time.LocalDate;
-
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
+//DB의 뉴스 테이블 컬럼들을 Java 객체로 정의
 @Entity
-@Getter
-@Setter
 @Table(name = "POKE_NEWS")
+@Getter
+@NoArgsConstructor
 public class NewsEntity {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Integer newsId;
@@ -20,22 +24,4 @@ public class NewsEntity {
     private String newsType;
     private String newsUrl;
     private LocalDate newsDate;
-
-    // @Column
-    // private Integer newsId;
-
-    // @Column
-    // private String newsTitle;
-
-    // @Column
-    // private String newsImg;
-
-    // @Column
-    // private String newsType;
-
-    // @Column
-    // private String newsUrl;
-
-    // @Column
-    // private LocalDate newsDate;
 }
