@@ -7,7 +7,7 @@ import server.data.entity.ShopEntity;
 @Getter
 public class ShopDTO {
 
-    //  private Long shopId; Id는 굳이 프런트엔드에 전해줄 필요가 없음
+    private Long shopId;
     private String shopName;
     private String shopAddress;
     private String shopAccess;
@@ -17,6 +17,7 @@ public class ShopDTO {
     private String shopImg;
 
     public ShopDTO(ShopEntity entity) {
+        this.shopId = entity.getShopId();
         this.shopName = entity.getShopName();
         this.shopAddress = entity.getShopAddress();
         this.shopAccess = entity.getShopAccess();
