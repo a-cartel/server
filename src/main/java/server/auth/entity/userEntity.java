@@ -16,42 +16,36 @@ import lombok.NoArgsConstructor;
 @Table(name = "POKE_USER")
 public class userEntity {
 
-    @Id
-    @Column(name = "ID", length = 24, nullable = false)
-    private String id;
+	@Id
+	@Column(name = "ID", length = 24, nullable = false)
+	private String id;
 
-    @Column(name = "EMAIL", length = 100, nullable = false, unique = true)
-    private String email;
+	@Column(name = "EMAIL", length = 100, nullable = false, unique = true)
+	private String email;
 
-    @Column(name = "PASSWORD", length = 255, nullable = false)
-    private String password;
+	@Column(name = "PASSWORD", length = 255, nullable = false)
+	private String password;
 
-    @Column(name = "NAME", length = 50, nullable = false)
-    private String name;
+	@Column(name = "NAME", length = 50, nullable = false)
+	private String name;
 
-    @Column(
-        name = "CREATED_AT",
-        nullable = false,
-        // insertable = false,
-        updatable = false
-    )
-    private LocalDateTime createdAt;
+	@Column(name = "CREATED_AT", nullable = false, updatable = false)
+	private LocalDateTime createdAt;
 
-    public userEntity(
-            String id,
-            String email,
-            String password,
-            String name
-    ) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.name = name;
-        this.createdAt = LocalDateTime.now();
+	public userEntity(String id, String email, String password, String name) {
+		this.id = id;
+		this.email = email;
+		this.password = password;
+		this.name = name;
+		this.createdAt = LocalDateTime.now();
+	}
 
-    }
+	public void changePassword(String encodedPassword) {
+		this.password = encodedPassword;
+	}
 
-    public void changePassword(String encodedPassword) {
-        this.password = encodedPassword;
-    }
+	public void changeProfile(String email, String name) {
+		this.email = email;
+		this.name = name;
+	}
 }

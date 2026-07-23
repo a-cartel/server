@@ -24,8 +24,8 @@ public class ReviewEntity {
 	@Column(name = "USER_ID", length = 24, nullable = false)
 	private String userId;
 
-	@Column(name = "SHOP_ID", length = 24, nullable = false)
-	private String shopId;
+	@Column(name = "SHOP_ID", nullable = false)
+	private Long shopId;
 
 	@Lob
 	@Column(name = "CONTENT")

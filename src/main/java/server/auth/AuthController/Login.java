@@ -16,16 +16,19 @@ import server.auth.service.UserService;
 @RequestMapping("/auth")
 public class Login {
 
-    private final UserService userService;
+	private final UserService userService;
 
-    public Login(UserService userService) {
-        this.userService = userService;
-    }
+	public Login(UserService userService) {
+		this.userService = userService;
+	}
 
-    @PostMapping("/login")
-    public Map<String, Object> login(@Valid @RequestBody LoginRequest request, HttpSession session) {
-        Map<String, Object> result = userService.login(request);
-        session.setAttribute("user", result.get("data"));
-        return result;
-    }
+	@PostMapping("/login")
+	public Map<String, Object> login(@Valid @RequestBody LoginRequest request, HttpSession session) {
+
+		Map<String, Object> result = userService.login(request);
+
+		session.setAttribute("user", result.get("data"));
+
+		return result;
+	}
 }

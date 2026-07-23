@@ -2,11 +2,10 @@ package server.review.service;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
+import server.exception.CustomException;
 import server.review.dto.ReviewResponse;
 import server.review.entity.ReviewEntity;
 import server.review.repository.ReviewRepository;
@@ -21,26 +20,21 @@ public class ReviewService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<ReviewResponse> getReviews(String shopId, String loginUserId) {
+	public List<ReviewResponse> getReviews(Long shopId, String loginUserId) {
 
-		List<ReviewEntity> reviews = reviewRepository.findByShopIdOrderByCreatedAtDesc(shopId);
-
-		return reviews.stream().map(review -> ReviewResponse.from(review, loginUserId)).toList();
+		return reviewRepository.findByShopIdOrderByCreatedAtDesc(shopId).stream()
+				.map(review -> ReviewResponse.from(review, loginUserId)).toList();
 	}
 
 	@Transactional
-	public void deleteReview(String shopId, String reviewId, String loginUserId) {
+	public void deleteReview(Long shopId, String reviewId, String loginUserId) {
 
 		if (loginUserId == null) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
+			throw new CustomException.UnauthorizedException("세션이 없습니다.");
 		}
 
-		ReviewEntity review = reviewRepository.findByReviewIdAndShopId(reviewId, shopId)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "리뷰를 찾을 수 없습니다."));
-
-		if (!loginUserId.equals(review.getUserId())) {
-			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인이 작성한 리뷰만 삭제할 수 있습니다.");
-		}
+		ReviewEntity review = reviewRepository.findByReviewIdAndShopIdAndUserId(reviewId, shopId, loginUserId)
+				.orElseThrow(() -> new CustomException.NotFoundException("리뷰를 찾을 수 없습니다."));
 
 		reviewRepository.delete(review);
 	}

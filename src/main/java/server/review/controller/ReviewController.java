@@ -1,6 +1,7 @@
 package server.review.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,7 +26,7 @@ public class ReviewController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<ReviewResponse>> getReviews(@PathVariable String shopId, HttpServletRequest request) {
+	public ResponseEntity<List<ReviewResponse>> getReviews(@PathVariable Long shopId, HttpServletRequest request) {
 
 		String loginUserId = getLoginUserId(request);
 
@@ -35,7 +36,7 @@ public class ReviewController {
 	}
 
 	@DeleteMapping("/{reviewId}")
-	public ResponseEntity<Void> deleteReview(@PathVariable String shopId, @PathVariable String reviewId,
+	public ResponseEntity<Void> deleteReview(@PathVariable Long shopId, @PathVariable String reviewId,
 			HttpServletRequest request) {
 
 		String loginUserId = getLoginUserId(request);
@@ -53,6 +54,14 @@ public class ReviewController {
 			return null;
 		}
 
-		return (String) session.getAttribute("LOGIN_USER_ID");
+		Object user = session.getAttribute("user");
+
+		if (!(user instanceof Map<?, ?> userData)) {
+			return null;
+		}
+
+		Object id = userData.get("id");
+
+		return id instanceof String ? (String) id : null;
 	}
 }

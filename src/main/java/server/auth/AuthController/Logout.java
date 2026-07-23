@@ -1,6 +1,5 @@
 package server.auth.AuthController;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,18 +13,15 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/auth")
 public class Logout {
 
-    @PostMapping("/logout")
-    public Map<String, Object> logout(HttpServletRequest request) {
+	@PostMapping("/logout")
+	public Map<String, Object> logout(HttpServletRequest request) {
 
-        HttpSession session = request.getSession(false);
+		HttpSession session = request.getSession(false);
 
-        if (session != null) {
-            session.invalidate();
-        }
-        
-        return Map.of(
-                "success", true,
-                "message", "로그아웃이 완료되었습니다."
-        );
-    }
+		if (session != null) {
+			session.invalidate();
+		}
+
+		return Map.of("success", true, "message", "로그아웃이 완료되었습니다.");
+	}
 }

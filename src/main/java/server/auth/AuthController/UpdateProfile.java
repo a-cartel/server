@@ -1,54 +1,55 @@
-// package server.auth.AuthController;
+package server.auth.AuthController;
 
-// import java.util.HashMap;
-// import java.util.Map;
+import java.util.Map;
 
-// import org.springframework.http.HttpStatus;
-// import org.springframework.http.ResponseEntity;
-// import org.springframework.web.bind.annotation.PostMapping;
-// import org.springframework.web.bind.annotation.RequestBody;
-// import org.springframework.web.bind.annotation.RequestMapping;
-// import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-// import jakarta.servlet.http.HttpServletRequest;
-// import jakarta.servlet.http.HttpSession;
-// import jakarta.validation.Valid;
-// // import server.auth.dto.UpdateProfileRequest;
-// import server.auth.service.UserService;
-// import server.exception.CustomException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import server.auth.dto.UpdateProfileRequest;
+import server.auth.service.UserService;
+import server.exception.CustomException;
 
-// @RestController
-// @RequestMapping("/auth")
-// public class UpdateProfile {
+@RestController
+@RequestMapping("/auth")
+public class UpdateProfile {
 
-// 	// private final UserService userService;
+	private final UserService userService;
 
-// 	// public ResetPassword(UserService userService) {
-// 	// 	this.userService = userService;
-// 	// }
+	public UpdateProfile(UserService userService) {
+		this.userService = userService;
+	}
 
-// 	@PostMapping("/update")
-// 	public Map<String, Object> resetPassword(
-// 			@Valid @RequestBody UpdateProfile request,
-// 			HttpServletRequest httpRequest) {
+	@PostMapping("/update")
+	public Map<String, Object> updateProfile(@Valid @RequestBody UpdateProfileRequest request,
+			HttpServletRequest httpRequest) {
 
-// 		HttpSession session = httpRequest.getSession(false);
+		HttpSession session = httpRequest.getSession(false);
 
-// 		if (session == null) {
-// 			throw new CustomException.UnauthorizedException("세션이 존재하지 않습니다.");
-// 		}
+		if (session == null) {
+			throw new CustomException.UnauthorizedException("세션이 없습니다.");
+		}
 
-// 		@SuppressWarnings("unchecked")
-// 		Map<String, Object> userData = (Map<String, Object>) session.getAttribute("user");
+		Object user = session.getAttribute("user");
 
-// 		if (userData == null) {
-// 			throw new CustomException.UnauthorizedException("로그인이 필요합니다.");
-// 		}
+		if (!(user instanceof Map<?, ?> userData)) {
+			throw new CustomException.UnauthorizedException("세션이 없습니다.");
+		}
 
-// 		String email = (String) userData.get("email");
-// 		Map<String, Object> result = userService.resetPassword(email, request);
-// 		session.invalidate();
+		Object id = userData.get("id");
 
-// 		return result;
-// 	}
-// }
+		if (!(id instanceof String userId)) {
+			throw new CustomException.UnauthorizedException("세션이 없습니다.");
+		}
+
+		Map<String, Object> result = userService.updateProfile(userId, request);
+
+		session.setAttribute("user", result.get("data"));
+
+		return result;
+	}
+}

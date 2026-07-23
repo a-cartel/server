@@ -11,20 +11,15 @@ import server.review.entity.ReviewEntity;
 public class ReviewResponse {
 
 	private String reviewId;
-
 	private String userId;
-
-	private String shopId;
-
+	private Long shopId;
 	private String content;
-
 	private Integer rating;
-
 	private LocalDateTime createdAt;
-
 	private boolean mine;
 
 	public static ReviewResponse from(ReviewEntity review, String loginUserId) {
+
 		boolean mine = loginUserId != null && loginUserId.equals(review.getUserId());
 
 		return new ReviewResponse(review.getReviewId(), review.getUserId(), review.getShopId(), review.getContent(),

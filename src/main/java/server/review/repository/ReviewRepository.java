@@ -9,7 +9,7 @@ import server.review.entity.ReviewEntity;
 
 public interface ReviewRepository extends JpaRepository<ReviewEntity, String> {
 
-	List<ReviewEntity> findByShopIdOrderByCreatedAtDesc(String shopId);
+	List<ReviewEntity> findByShopIdOrderByCreatedAtDesc(Long shopId);
 
-	Optional<ReviewEntity> findByReviewIdAndShopId(String reviewId, String shopId);
+	Optional<ReviewEntity> findByReviewIdAndShopIdAndUserId(String reviewId, Long shopId, String userId);
 }

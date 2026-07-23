@@ -1,10 +1,7 @@
 package server.auth.AuthController;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,25 +25,29 @@ public class ResetPassword {
 	}
 
 	@PostMapping("/resetPassword")
-	public Map<String, Object> resetPassword(
-			@Valid @RequestBody ResetPasswordRequest request,
+	public Map<String, Object> resetPassword(@Valid @RequestBody ResetPasswordRequest request,
 			HttpServletRequest httpRequest) {
 
 		HttpSession session = httpRequest.getSession(false);
 
 		if (session == null) {
-			throw new CustomException.UnauthorizedException("세션이 존재하지 않습니다.");
+			throw new CustomException.UnauthorizedException("세션이 없습니다.");
 		}
 
-		@SuppressWarnings("unchecked")
-		Map<String, Object> userData = (Map<String, Object>) session.getAttribute("user");
+		Object user = session.getAttribute("user");
 
-		if (userData == null) {
-			throw new CustomException.UnauthorizedException("로그인이 필요합니다.");
+		if (!(user instanceof Map<?, ?> userData)) {
+			throw new CustomException.UnauthorizedException("세션이 없습니다.");
 		}
 
-		String email = (String) userData.get("email");
-		Map<String, Object> result = userService.resetPassword(email, request);
+		Object id = userData.get("id");
+
+		if (!(id instanceof String userId)) {
+			throw new CustomException.UnauthorizedException("세션이 없습니다.");
+		}
+
+		Map<String, Object> result = userService.resetPassword(userId, request);
+
 		session.invalidate();
 
 		return result;
