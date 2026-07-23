@@ -16,7 +16,7 @@ public class ServerApplication {
 		Dotenv dotenv = Dotenv.configure().directory(".").ignoreIfMissing().load();
         dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
 
-//		SpringApplication.run(ServerApplication.class, args);
+		SpringApplication.run(ServerApplication.class, args);
 	}
 
 }

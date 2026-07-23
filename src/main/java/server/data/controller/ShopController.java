@@ -3,6 +3,7 @@ package server.data.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import server.data.dto.ShopDTO;
@@ -22,16 +23,19 @@ public class ShopController {
     @GetMapping
     public ResponseEntity<List<ShopDTO>> getAllShops() {
         // news와 달리 페이지네이션은 클라이언트 사이드에 맡기기
-        List<ShopDTO> shopList = shopService.findAll()
-                .stream()
-                .map(ShopDTO::new)
-                .collect(Collectors.toList());
+        List<ShopDTO> shopList = shopService.getAllShops();
 
         return ResponseEntity.ok(shopList);
-
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ShopDTO> getShopById(@PathVariable Long id) {
+        ShopDTO shopDTO = shopService.getShopById(id);
+        return ResponseEntity.ok(shopDTO);
+    }
 }
+
+
 
 
 
