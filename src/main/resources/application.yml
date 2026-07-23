@@ -1,6 +1,13 @@
 server:
   port: 8081
-  # address: 0.0.0.0
+  servlet:
+    session:
+      cookie:
+        max-age: 1800
+        http-only: true
+        same-site: lax
+        secure: false
+      timeout: 30m
 
 spring:
   application:
