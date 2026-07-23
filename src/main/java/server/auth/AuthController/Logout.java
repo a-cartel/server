@@ -1,5 +1,6 @@
 package server.auth.AuthController;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +22,7 @@ public class Logout {
         if (session != null) {
             session.invalidate();
         }
-
+        
         return Map.of(
                 "success", true,
                 "message", "로그아웃이 완료되었습니다."

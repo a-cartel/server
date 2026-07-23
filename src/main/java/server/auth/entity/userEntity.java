@@ -32,7 +32,7 @@ public class userEntity {
     @Column(
         name = "CREATED_AT",
         nullable = false,
-        insertable = false,
+        // insertable = false,
         updatable = false
     )
     private LocalDateTime createdAt;
@@ -47,6 +47,8 @@ public class userEntity {
         this.email = email;
         this.password = password;
         this.name = name;
+        this.createdAt = LocalDateTime.now();
+
     }
 
     public void changePassword(String encodedPassword) {

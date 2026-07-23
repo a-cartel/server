@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import server.auth.dto.RegisterRequest;
 import server.auth.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 @RestController
@@ -19,7 +20,9 @@ public class Register {
 	}
 
 	@PostMapping("/register")
-	public Map<String, Object> register(@Valid @RequestBody RegisterRequest request) {
-		return userService.register(request);
+	public Map<String, Object> register(@Valid @RequestBody RegisterRequest request, HttpSession session) {
+		Map<String, Object> result = userService.register(request);
+		session.setAttribute("user", result.get("data"));
+		return result;
 	}
 }

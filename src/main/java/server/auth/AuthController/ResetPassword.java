@@ -1,5 +1,6 @@
 package server.auth.AuthController;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import server.auth.dto.ResetPasswordRequest;
 import server.auth.service.UserService;
+import server.exception.CustomException;
 
 @RestController
 @RequestMapping("/auth")
@@ -26,30 +28,27 @@ public class ResetPassword {
 	}
 
 	@PostMapping("/resetPassword")
-	public ResponseEntity<Map<String, Object>> resetPassword(@Valid @RequestBody ResetPasswordRequest request,
+	public Map<String, Object> resetPassword(
+			@Valid @RequestBody ResetPasswordRequest request,
 			HttpServletRequest httpRequest) {
+
 		HttpSession session = httpRequest.getSession(false);
 
 		if (session == null) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-					.body(Map.of("success", false, "message", "로그인이 필요합니다."));
+			throw new CustomException.UnauthorizedException("세션이 존재하지 않습니다.");
 		}
 
-		String email = (String) session.getAttribute("LOGIN_USER_EMAIL");
+		@SuppressWarnings("unchecked")
+		Map<String, Object> userData = (Map<String, Object>) session.getAttribute("user");
 
-		if (email == null) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-					.body(Map.of("success", false, "message", "로그인이 필요합니다."));
+		if (userData == null) {
+			throw new CustomException.UnauthorizedException("로그인이 필요합니다.");
 		}
 
-		Map<String, Object> response = userService.resetPassword(email, request);
-
-		if (Boolean.FALSE.equals(response.get("success"))) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-		}
-
+		String email = (String) userData.get("email");
+		Map<String, Object> result = userService.resetPassword(email, request);
 		session.invalidate();
 
-		return ResponseEntity.ok(response);
+		return result;
 	}
 }
