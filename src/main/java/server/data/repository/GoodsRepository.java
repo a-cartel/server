@@ -1,4 +1,7 @@
 package server.data.repository;
 
-public class GoodsRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import server.data.entity.GoodsEntity;
+
+public interface GoodsRepository extends JpaRepository<GoodsEntity, Long> {
 }

@@ -7,7 +7,6 @@ import server.data.entity.ShopEntity;
 import server.data.repository.ShopRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 //컨트롤러와 리포지토리 사이에서 데이터 처리를 담당
 @Service
@@ -19,7 +18,7 @@ public class ShopService {
     public List<ShopDTO> getAllShops() {
         return shopRepository.findAll().stream()
                 .map(ShopDTO::new)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public ShopDTO getShopById(Long id) {
