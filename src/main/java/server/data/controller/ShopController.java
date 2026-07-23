@@ -1,5 +1,6 @@
 package server.data.controller;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +25,6 @@ public class ShopController {
     public ResponseEntity<List<ShopDTO>> getAllShops() {
         // news와 달리 페이지네이션은 클라이언트 사이드에 맡기기
         List<ShopDTO> shopList = shopService.getAllShops();
-
         return ResponseEntity.ok(shopList);
     }
 

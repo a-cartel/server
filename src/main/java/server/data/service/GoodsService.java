@@ -3,6 +3,7 @@ package server.data.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import server.data.dto.GoodsDTO;
+import server.data.repository.GoodsRepository;
 
 import java.util.List;
 

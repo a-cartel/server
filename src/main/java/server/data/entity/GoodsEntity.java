@@ -1,10 +1,8 @@
 package server.data.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
 
 import java.time.LocalDate;
 
@@ -15,6 +13,7 @@ import java.time.LocalDate;
 public class GoodsEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long goodsId;
 
     private String goodsURL;

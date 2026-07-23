@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "POKE_SHOPS")
+@Table(name = "POKE_SHOP")
 @Getter
 @NoArgsConstructor
 public class ShopEntity {
@@ -19,10 +19,10 @@ public class ShopEntity {
     private String shopAddress;
 
     @Column(name = "SHOP_AREA")
-    private String shopAccess;
+    private String shopArea;
 
     @Column(name = "SHOP_TYPE")
-    private String shopHoliday;
+    private String shopType;
 
     @Column(name = "SHOP_OPENTIME")
     private String shopHours;

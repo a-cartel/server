@@ -10,8 +10,8 @@ public class ShopDTO {
     private Long shopId;
     private String shopName;
     private String shopAddress;
-    private String shopAccess;
-    private String shopHoliday;
+    private String shopArea;
+    private String shopType;
     private String shopHours;
     private String shopPhone;
     private String shopImg;
@@ -20,8 +20,8 @@ public class ShopDTO {
         this.shopId = entity.getShopId();
         this.shopName = entity.getShopName();
         this.shopAddress = entity.getShopAddress();
-        this.shopAccess = entity.getShopAccess();
-        this.shopHoliday = entity.getShopHoliday();
+        this.shopArea = entity.getShopArea();
+        this.shopType = entity.getShopType();
         this.shopHours = entity.getShopHours();
         this.shopPhone = entity.getShopPhone();
         this.shopImg = entity.getShopImg();
