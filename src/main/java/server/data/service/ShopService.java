@@ -17,7 +17,6 @@ public class ShopService {
 
     public List<ShopDTO> getAllShops() {
         List<ShopEntity> shopEntities = shopRepository.findAll();
-        System.out.println(shopEntities);
 
         return shopRepository.findAll().stream()
                 .map(ShopDTO::new)

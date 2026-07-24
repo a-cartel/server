@@ -9,16 +9,16 @@ import java.time.LocalDate;
 public class GoodsDTO {
 
     private Long goodsId;
-    private String goodsURL;
+    private String goodsUrl;
     private String goodsTitle;
     private String goodsImg;
     private LocalDate goodsDate;
 
     public GoodsDTO(GoodsEntity entity) {
-        this.goodsId = goodsId;
-        this.goodsURL = goodsURL;
-        this.goodsTitle = goodsTitle;
-        this.goodsImg = goodsImg;
-        this.goodsDate = goodsDate;
+        this.goodsId = entity.getGoodsId();
+        this.goodsUrl = entity.getGoodsUrl();
+        this.goodsTitle = entity.getGoodsTitle();
+        this.goodsImg = entity.getGoodsImg();
+        this.goodsDate = entity.getGoodsDate();
     }
 }

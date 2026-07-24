@@ -16,7 +16,7 @@ public class GoodsEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long goodsId;
 
-    private String goodsURL;
+    private String goodsUrl;
     private String goodsTitle;
     private String goodsImg;
     private LocalDate goodsDate;
