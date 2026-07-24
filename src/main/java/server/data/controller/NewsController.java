@@ -28,7 +28,7 @@ public class NewsController {
             // 기본값: 0번째 페이지부터 시작, 한 페이지당 10개씩, newsDate 기준 최신순(내림차순) 정렬
             @PageableDefault(page = 0, size = 10, sort = "newsDate", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "9") int size,
+            @RequestParam(defaultValue = "9") int size,  // 프런트에서 목록을 한줄에 3개씩 보여주고 있으니 배수에 맞춰서
             @RequestParam(defaultValue = "ALL") String category)
         {
         // NewsService의 getNewsList() 메서드를 가져다 씀
