@@ -26,25 +26,23 @@ public class UserService {
 		this.passwordEncoder = passwordEncoder;
 	}
 
-	public Map<String, Object> login(LoginRequest request) {
+	public Map<String, Object> login(LoginRequest request)  {
 
 		String email = request.getEmail().trim().toLowerCase();
 
 		userEntity user = userRepository.findByEmail(email)
-				.orElseThrow(() -> new CustomException.NotFoundException("이메일 또는 비밀번호가 올바르지 않습니다."));
+				.orElseThrow(() -> new CustomException.InvalidPasswordException("이메일 또는 비밀번호가 올바르지 않습니다."));
 
 		if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
 			throw new CustomException.InvalidPasswordException("이메일 또는 비밀번호가 올바르지 않습니다.");
 		}
 
-		return Map.of("success", true, "message", "로그인이 완료되었습니다.", "data",
-				Map.of("id", user.getId(), "email", user.getEmail(), "name", user.getName()));
+		return Map.of("id", user.getId(), "email", user.getEmail(), "name", user.getName());
 	}
 
 	public Map<String, Object> register(RegisterRequest request) {
 
 		String email = request.getEmail().trim().toLowerCase();
-
 		String name = request.getName().trim();
 
 		if (userRepository.existsByEmail(email)) {
@@ -59,14 +57,13 @@ public class UserService {
 
 		userRepository.save(user);
 
-		return Map.of("success", true, "message", "회원가입이 완료되었습니다.", "data",
-				Map.of("id", user.getId(), "email", user.getEmail(), "name", user.getName()));
+		return Map.of("id", user.getId(), "email", user.getEmail(), "name", user.getName());
 	}
 
 	@Transactional
-	public Map<String, Object> resetPassword(String userId, ResetPasswordRequest request) {
+	public Map<String, Object> resetPassword(String email, ResetPasswordRequest request) {
 
-		userEntity user = userRepository.findById(userId)
+		userEntity user = userRepository.findByEmail(email)
 				.orElseThrow(() -> new CustomException.NotFoundException("회원 정보를 찾을 수 없습니다."));
 
 		if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
@@ -87,9 +84,9 @@ public class UserService {
 	}
 
 	@Transactional
-	public Map<String, Object> updateProfile(String userId, UpdateProfileRequest request) {
+	public Map<String, Object> updateProfile(String email, UpdateProfileRequest request) {
 
-		userEntity user = userRepository.findById(userId)
+		userEntity user = userRepository.findByEmail(email)
 				.orElseThrow(() -> new CustomException.NotFoundException("회원 정보를 찾을 수 없습니다."));
 
 		String newEmail = request.getEmail().trim().toLowerCase();
@@ -105,7 +102,6 @@ public class UserService {
 
 		userRepository.save(user);
 
-		return Map.of("success", true, "message", "회원 정보가 변경되었습니다.", "data",
-				Map.of("id", user.getId(), "email", user.getEmail(), "name", user.getName()));
+		return Map.of("id", user.getId(), "email", user.getEmail(), "name", user.getName());
 	}
 }

@@ -1,15 +1,12 @@
 package server.review.repository;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import server.review.entity.ReviewEntity;
 
-public interface ReviewRepository extends JpaRepository<ReviewEntity, String> {
+public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
 
 	List<ReviewEntity> findByShopIdOrderByCreatedAtDesc(Long shopId);
-
-	Optional<ReviewEntity> findByReviewIdAndShopIdAndUserId(String reviewId, Long shopId, String userId);
 }

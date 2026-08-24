@@ -10,46 +10,29 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import server.auth.dto.UpdateProfileRequest;
 import server.auth.service.UserService;
-import server.exception.CustomException;
+import server.util.SessionUtil;
 
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class UpdateProfile {
 
 	private final UserService userService;
-
-	public UpdateProfile(UserService userService) {
-		this.userService = userService;
-	}
 
 	@PostMapping("/update")
 	public Map<String, Object> updateProfile(@Valid @RequestBody UpdateProfileRequest request,
 			HttpServletRequest httpRequest) {
 
+		String email = SessionUtil.requireEmail(httpRequest.getSession(false));
+
+		Map<String, Object> result = userService.updateProfile(email, request);
+
 		HttpSession session = httpRequest.getSession(false);
+		SessionUtil.login(session, result);
 
-		if (session == null) {
-			throw new CustomException.UnauthorizedException("세션이 없습니다.");
-		}
-
-		Object user = session.getAttribute("user");
-
-		if (!(user instanceof Map<?, ?> userData)) {
-			throw new CustomException.UnauthorizedException("세션이 없습니다.");
-		}
-
-		Object id = userData.get("id");
-
-		if (!(id instanceof String userId)) {
-			throw new CustomException.UnauthorizedException("세션이 없습니다.");
-		}
-
-		Map<String, Object> result = userService.updateProfile(userId, request);
-
-		session.setAttribute("user", result.get("data"));
-
-		return result;
+		return Map.of("success", true, "message", "회원 정보가 변경되었습니다.", "data", result);
 	}
 }

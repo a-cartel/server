@@ -27,6 +27,6 @@ spring:
 
   jpa:
     database-platform: org.hibernate.dialect.OracleDialect
-    hibernate:
-      ddl-auto: update
+    # hibernate:
+    #   ddl-auto: update
     show-sql: false

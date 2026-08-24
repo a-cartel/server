@@ -7,28 +7,31 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import server.auth.dto.RegisterRequest;
 import server.auth.service.UserService;
+import server.util.SessionUtil;
 
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class Register {
 
 	private final UserService userService;
 
-	public Register(UserService userService) {
-		this.userService = userService;
-	}
-
 	@PostMapping("/register")
-	public Map<String, Object> register(@Valid @RequestBody RegisterRequest request, HttpSession session) {
+	public Map<String, Object> register(@Valid @RequestBody RegisterRequest request, HttpServletRequest httpRequest) {
 
 		Map<String, Object> result = userService.register(request);
 
-		session.setAttribute("user", result.get("data"));
+		HttpSession session = httpRequest.getSession(true);
+		System.out.println("session : " + session);
+		SessionUtil.login(session, result);
 
-		return result;
+		// return result;
+		return Map.of("success", true, "message", "로그인이 완료되었습니다.", "data", result);
 	}
 }

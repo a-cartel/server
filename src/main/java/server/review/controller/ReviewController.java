@@ -7,61 +7,71 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-import server.review.dto.ReviewResponse;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import server.review.dto.ReviewDTO;
 import server.review.service.ReviewService;
+import server.util.SessionUtil;
 
+// 프런트엔드에서 axios(/shop/{shopId}/reviews)로 요청이 왔을 때 안내되는 곳
+// 조회는 누구나 가능(permitAll이었던 shop과 동일), 작성/수정/삭제는 로그인 필요.
+// Spring Security가 없으므로, 로그인 체크는 SessionUtil.requireData()로 컨트롤러가 직접 한다.
 @RestController
-@RequestMapping("/info/shops/{shopId}/reviews")
+@RequestMapping("/shop/{shopId}/reviews")
+@RequiredArgsConstructor
 public class ReviewController {
 
 	private final ReviewService reviewService;
 
-	public ReviewController(ReviewService reviewService) {
-		this.reviewService = reviewService;
-	}
-
 	@GetMapping
-	public ResponseEntity<List<ReviewResponse>> getReviews(@PathVariable Long shopId, HttpServletRequest request) {
+	public ResponseEntity<List<ReviewDTO>> getReviews(@PathVariable Long shopId) {
 
-		String loginUserId = getLoginUserId(request);
-
-		List<ReviewResponse> reviews = reviewService.getReviews(shopId, loginUserId);
+		List<ReviewDTO> reviews = reviewService.getReviewsByShop(shopId);
 
 		return ResponseEntity.ok(reviews);
 	}
 
-	@DeleteMapping("/{reviewId}")
-	public ResponseEntity<Void> deleteReview(@PathVariable Long shopId, @PathVariable String reviewId,
-			HttpServletRequest request) {
+	@PostMapping
+	public ResponseEntity<ReviewDTO> createReview(@PathVariable Long shopId,
+			@Valid @RequestBody ReviewDTO request, HttpServletRequest httpRequest) {
 
-		String loginUserId = getLoginUserId(request);
+		Map<String, Object> user = SessionUtil.requireData(httpRequest.getSession(false));
+		String userId = (String) user.get("id");
+		String writerName = (String) user.get("name");
 
-		reviewService.deleteReview(shopId, reviewId, loginUserId);
+		ReviewDTO review = reviewService.createReview(shopId, userId, writerName, request);
 
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.ok(review);
 	}
 
-	private String getLoginUserId(HttpServletRequest request) {
+	@PutMapping("/{reviewId}")
+	public ResponseEntity<ReviewDTO> updateReview(@PathVariable Long shopId, @PathVariable Long reviewId,
+			@Valid @RequestBody ReviewDTO request, HttpServletRequest httpRequest) {
 
-		HttpSession session = request.getSession(false);
+		Map<String, Object> user = SessionUtil.requireData(httpRequest.getSession(false));
+		String userId = (String) user.get("id");
+		String writerName = (String) user.get("name");
 
-		if (session == null) {
-			return null;
-		}
+		ReviewDTO review = reviewService.updateReview(reviewId, userId, writerName, request);
 
-		Object user = session.getAttribute("user");
+		return ResponseEntity.ok(review);
+	}
 
-		if (!(user instanceof Map<?, ?> userData)) {
-			return null;
-		}
+	@DeleteMapping("/{reviewId}")
+	public ResponseEntity<Map<String, Object>> deleteReview(@PathVariable Long shopId, @PathVariable Long reviewId,
+			HttpServletRequest httpRequest) {
 
-		Object id = userData.get("id");
+		String userId = (String) SessionUtil.requireData(httpRequest.getSession(false)).get("id");
 
-		return id instanceof String ? (String) id : null;
+		reviewService.deleteReview(reviewId, userId);
+
+		return ResponseEntity.ok(Map.of("success", true, "message", "리뷰가 삭제되었습니다."));
 	}
 }

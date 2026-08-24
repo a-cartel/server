@@ -1,0 +1,24 @@
+services:
+  redis:
+    image: redis:7-alpine 
+    container_name: server-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+    # --appendonly yes: AOF(Append Only File) 방식으로 디스크에 데이터 기록
+    # 이걸 켜야 컨테이너 재시작해도 세션 데이터가 안 날아감.
+    # 껐을 경우: 컨테이너 재시작 시 Redis 안의 데이터가 전부 초기화됨 (순수 인메모리 캐시처럼 동작)
+    command: ["redis-server", "--appendonly", "yes"]
+
+    volumes:
+      - redis-data:/data  # AOF 파일이 저장되는 위치를 도커 볼륨에 연결 -> 컨테이너를 지워도 데이터는 남음
+
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]  # docker exec server-redis redis-cli ping
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  redis-data:
