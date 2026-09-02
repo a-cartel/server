@@ -33,13 +33,13 @@ public class ReviewDTO {
 	private String writerName;
 	private LocalDateTime createdAt;
 
-	@NotNull(message = "별점을 입력해주세요.")
-	@Min(value = 1, message = "별점은 1점 이상이어야 합니다.")
-	@Max(value = 5, message = "별점은 5점 이하여야 합니다.")
+	@NotNull(message = "星評価をつけてください")
+	@Min(value = 1, message = "星評価は 1点以上でなければなりません。")
+	@Max(value = 5, message = "星評価は 5点以下でなければなりません。")
 	private Integer rating;
 
-	@NotBlank(message = "리뷰 내용을 입력해주세요.")
-	@Size(max = 1000, message = "리뷰는 1000자 이하로 입력해주세요.")
+	@NotBlank(message = "レビューの内容を入力してください。")
+	@Size(max = 1000, message = "レビューは1000文字以下で入力してください。")
 	private String content;
 
 	public static ReviewDTO from(ReviewEntity entity, String writerName) {

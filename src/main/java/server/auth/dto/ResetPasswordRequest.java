@@ -11,11 +11,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ResetPasswordRequest {
 
-	@NotBlank(message = "현재 비밀번호를 입력해주세요.")
-	@Size(min = 4, max = 100, message = "현재 비밀번호는 4자 이상 100자 이하로 입력해주세요.")
+	@NotBlank(message = "現在のパスワードを入力してください。")
+	@Size(min = 4, max = 100, message = "現在のパスワードは 4文字以上 100文字以下で入力してください。")
 	private String currentPassword;
 
-	@NotBlank(message = "새 비밀번호를 입력해주세요.")
-	@Size(min = 4, max = 100, message = "새 비밀번호는 4자 이상 100자 이하로 입력해주세요.")
+	@NotBlank(message = "新しいパスワードを入力してください。")
+	@Size(min = 4, max = 100, message = "新しいパスワードは 4文字以上 100文字以下で入力してください。")
 	private String newPassword;
 }

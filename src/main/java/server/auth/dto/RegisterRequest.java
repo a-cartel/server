@@ -12,16 +12,16 @@ import lombok.Setter;
 @NoArgsConstructor
 public class RegisterRequest {
 
-	@NotBlank(message = "이메일을 입력해주세요.")
-	@Pattern(regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", message = "올바른 이메일 형식이 아닙니다.")
-	@Size(max = 40, message = "이메일은 40자 이하로 입력해주세요.")
+	@NotBlank(message = "メールアドレスを入力してください。")
+	@Pattern(regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", message = "正しいメールアドレスの形式ではありません。")
+	@Size(max = 40, message = "メールアドレスは 40文字以下で入力してください。")
 	private String email;
 
-	@NotBlank(message = "비밀번호를 입력해주세요.")
-	@Size(min = 4, max = 12, message = "비밀번호는 4자 이상 12자 이하로 입력해주세요.")
+	@NotBlank(message = "パスワードを入力してください。")
+	@Size(min = 4, max = 12, message = "パスワードは 4文字以上 12文字以下で入力してください。")
 	private String password;
 
-	@NotBlank(message = "이름을 입력해주세요.")
-	@Size(max = 8, message = "이름은 8자 이하로 입력해주세요.")
+	@NotBlank(message = "名前を入力してください。")
+	@Size(max = 8, message = "名前は 8文字以下で入力してください。")
 	private String name;
 }

@@ -17,6 +17,6 @@ public class Logout {
 	public Map<String, Object> logout(HttpServletRequest request) {
 
 		SessionUtil.logout(request.getSession(false));
-		return Map.of("success", true, "message", "로그아웃이 완료되었습니다.");
+		return Map.of("success", true, "message", "ログアウトしました。");
 	}
 }

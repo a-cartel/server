@@ -25,7 +25,7 @@ public class PokeCodexService {
 	public PokeCodexDTO getCodexById(Integer id) {
 
 		PokeCodex entity = pokeCodexRepository.findById(id)
-				.orElseThrow(() -> new CustomException.NotFoundException("해당 포켓몬이 없습니다. id=" + id));
+				.orElseThrow(() -> new CustomException.NotFoundException("該当のポケモンが見つかりません。 id=" + id));
 
 		return new PokeCodexDTO(entity);
 	}

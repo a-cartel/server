@@ -31,10 +31,10 @@ public class UserService {
 		String email = request.getEmail().trim().toLowerCase();
 
 		userEntity user = userRepository.findByEmail(email)
-				.orElseThrow(() -> new CustomException.InvalidPasswordException("이메일 또는 비밀번호가 올바르지 않습니다."));
+				.orElseThrow(() -> new CustomException.InvalidPasswordException("メールアドレスまたはパスワードが正しくありません。"));
 
 		if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-			throw new CustomException.InvalidPasswordException("이메일 또는 비밀번호가 올바르지 않습니다.");
+			throw new CustomException.InvalidPasswordException("メールアドレスまたはパスワードが正しくありません。");
 		}
 
 		return Map.of("id", user.getId(), "email", user.getEmail(), "name", user.getName());
@@ -46,7 +46,7 @@ public class UserService {
 		String name = request.getName().trim();
 
 		if (userRepository.existsByEmail(email)) {
-			throw new CustomException.DuplicateEmailException("이미 사용중인 이메일 입니다.");
+			throw new CustomException.DuplicateEmailException("すでに使用されているメールアドレスです。");
 		}
 
 		String userId = UUID.randomUUID().toString().replace("-", "").substring(0, 24);
@@ -64,14 +64,14 @@ public class UserService {
 	public Map<String, Object> resetPassword(String email, ResetPasswordRequest request) {
 
 		userEntity user = userRepository.findByEmail(email)
-				.orElseThrow(() -> new CustomException.NotFoundException("회원 정보를 찾을 수 없습니다."));
+				.orElseThrow(() -> new CustomException.NotFoundException("会員情報が見つかりません。"));
 
 		if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
-			throw new CustomException.InvalidPasswordException("현재 비밀번호가 올바르지 않습니다.");
+			throw new CustomException.InvalidPasswordException("現在のパスワードが正しくありません。");
 		}
 
 		if (passwordEncoder.matches(request.getNewPassword(), user.getPassword())) {
-			throw new CustomException.SamePasswordException("새 비밀번호는 현재 비밀번호와 달라야 합니다.");
+			throw new CustomException.SamePasswordException("新しいパスワードは現在のパスワードと異なるものにしてください。");
 		}
 
 		String encodedNewPassword = passwordEncoder.encode(request.getNewPassword());
@@ -80,14 +80,14 @@ public class UserService {
 
 		userRepository.save(user);
 
-		return Map.of("success", true, "message", "비밀번호가 변경되었습니다.");
+		return Map.of("success", true, "message", "パスワードを更新しました。");
 	}
 
 	@Transactional
 	public Map<String, Object> updateProfile(String email, UpdateProfileRequest request) {
 
 		userEntity user = userRepository.findByEmail(email)
-				.orElseThrow(() -> new CustomException.NotFoundException("회원 정보를 찾을 수 없습니다."));
+				.orElseThrow(() -> new CustomException.NotFoundException("会員情報が見つかりません。"));
 
 		String newEmail = request.getEmail().trim().toLowerCase();
 
@@ -95,7 +95,7 @@ public class UserService {
 
 		if (!newEmail.equals(user.getEmail()) && userRepository.existsByEmail(newEmail)) {
 
-			throw new CustomException.DuplicateEmailException("이미 사용중인 이메일 입니다.");
+			throw new CustomException.DuplicateEmailException("すでに使用されているメールアドレスです。");
 		}
 
 		user.changeProfile(newEmail, newName);

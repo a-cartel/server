@@ -72,6 +72,6 @@ public class ReviewController {
 
 		reviewService.deleteReview(reviewId, userId);
 
-		return ResponseEntity.ok(Map.of("success", true, "message", "리뷰가 삭제되었습니다."));
+		return ResponseEntity.ok(Map.of("success", true, "message", "レビューを削除しました。"));
 	}
 }

@@ -50,7 +50,7 @@ public class ReviewService {
 
 		// FK_REVIEW_SHOP 제약조건이 DB에 있긴 하지만, 그냥 두면 못생긴 SQL 예외(500)가 나가서 미리 확인한다.
 		if (!shopRepository.existsById(shopId)) {
-			throw new CustomException.NotFoundException("존재하지 않는 매장입니다.");
+			throw new CustomException.NotFoundException("存在しない店舗にレビューを作成することはできません。");
 		}
 
 		ReviewEntity review = new ReviewEntity(shopId, userId, request.getRating(), request.getContent());
@@ -64,10 +64,10 @@ public class ReviewService {
 	public ReviewDTO updateReview(Long reviewId, String userId, String writerName, ReviewDTO request) {
 
 		ReviewEntity review = reviewRepository.findById(reviewId)
-				.orElseThrow(() -> new CustomException.NotFoundException("리뷰를 찾을 수 없습니다."));
+				.orElseThrow(() -> new CustomException.NotFoundException("レビューが見つかりません。"));
 
 		if (!review.getUserId().equals(userId)) {
-			throw new CustomException.UnauthorizedException("본인이 작성한 리뷰만 수정할 수 있습니다.");
+			throw new CustomException.UnauthorizedException("本人が作成したレビューのみ修正できます。");
 		}
 
 		review.update(request.getRating(), request.getContent());
@@ -81,10 +81,10 @@ public class ReviewService {
 	public void deleteReview(Long reviewId, String userId) {
 
 		ReviewEntity review = reviewRepository.findById(reviewId)
-				.orElseThrow(() -> new CustomException.NotFoundException("리뷰를 찾을 수 없습니다."));
+				.orElseThrow(() -> new CustomException.NotFoundException("レビューが見つかりません。"));
 
 		if (!review.getUserId().equals(userId)) {
-			throw new CustomException.UnauthorizedException("본인이 작성한 리뷰만 삭제할 수 있습니다.");
+			throw new CustomException.UnauthorizedException("本人が作成したレビューのみ削除できます。");
 		}
 
 		reviewRepository.delete(review);

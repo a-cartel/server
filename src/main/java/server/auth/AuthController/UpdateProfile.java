@@ -33,6 +33,6 @@ public class UpdateProfile {
 		HttpSession session = httpRequest.getSession(false);
 		SessionUtil.login(session, result);
 
-		return Map.of("success", true, "message", "회원 정보가 변경되었습니다.", "data", result);
+		return Map.of("success", true, "message", "会員情報を更新しました。", "data", result);
 	}
 }

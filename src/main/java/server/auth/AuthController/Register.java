@@ -32,6 +32,6 @@ public class Register {
 		SessionUtil.login(session, result);
 
 		// return result;
-		return Map.of("success", true, "message", "로그인이 완료되었습니다.", "data", result);
+		return Map.of("success", true, "message", "ログインしました。", "data", result);
 	}
 }

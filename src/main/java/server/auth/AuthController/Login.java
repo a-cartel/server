@@ -32,6 +32,6 @@ public class Login {
 
 		System.out.println("[LOGIN] sessionId=" + session.getId() + " user=" + user);
 
-		return Map.of("success", true, "message", "로그인이 완료되었습니다.", "data", user);
+		return Map.of("success", true, "message", "ログインしました。", "data", user);
 	}
 }

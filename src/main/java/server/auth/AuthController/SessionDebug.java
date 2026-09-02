@@ -22,7 +22,7 @@ public class SessionDebug {
 		HttpSession session = httpRequest.getSession(false);
 
 		if (session == null) {
-			return Map.of("success", true, "message", "세션이 없습니다.");
+			return Map.of("success", true, "message", "せッションは存在しません。");
 		}
 
 		return Map.of(
